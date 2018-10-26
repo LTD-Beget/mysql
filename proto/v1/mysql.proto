@@ -1,0 +1,230 @@
+syntax = 'proto3';
+
+package beget.mysql.v1.mysql;
+
+import "google/api/annotations.proto";
+import "mysql/proto/v1/structures.proto";
+
+// mysqlService
+service MysqlService {
+    //Получить список БД
+    rpc getList (GetListRequest) returns (GetListResponse) {
+        option (google.api.http) = {
+            get: "/v1/mysql"
+        };
+    }
+
+    //Получить список БД
+    rpc getOne (GetOneRequest) returns (GetOneResponse) {
+        option (google.api.http) = {
+            get: "/v1/mysql/{name}"
+        };
+    }
+
+    //Создать новую БД
+    rpc create (CreateDbRequest) returns (CreateDbResponse) {
+        option (google.api.http) = {
+            post: "/v1/mysql"
+            body: "*"
+        };
+    }
+
+    //Удалить БД
+    rpc drop (DropDbRequest) returns (DropDbResponse) {
+        option (google.api.http) = {
+            delete: "/v1/mysql/{name}"
+        };
+    }
+
+    //Изменить БД
+    rpc update (UpdateDbRequest) returns (UpdateDbResponse) {
+        option (google.api.http) = {
+            put: "/v1/mysql/{name}"
+            body: "*"
+        };
+    }
+
+    //Добавить доступ к БД
+    rpc addAccess (AddAccessRequest) returns (AddAccessResponse) {
+        option (google.api.http) = {
+            post: "/v1/mysql/{name}/access"
+            body: "*"
+        };
+    }
+
+    //Изменить доступ к БД
+    rpc updateAccess (UpdateAccessRequest) returns (UpdateAccessResponse) {
+        option (google.api.http) = {
+            put: "/v1/mysql/{name}/access/{host}"
+            body: "*"
+        };
+    }
+
+    //Удалить доступ к БД
+    rpc dropAccess (DropAccessRequest) returns (DropAccessResponse) {
+        option (google.api.http) = {
+            delete: "/v1/mysql/{name}/access/{host}"
+        };
+    }
+
+    //Получить пароль от localhost доступа, если разрешена расшифровка
+    rpc getDecryptedPassword (GetDecryptedPasswordRequest) returns (GetDecryptedPasswordResponse) {
+        option (google.api.http) = {
+            get: "/v1/mysql/{name}/password"
+        };
+    }
+}
+
+message GetListRequest {
+}
+
+message GetListResponse {
+    repeated beget.mysql.v1.structures.DataBase database = 1;
+}
+
+message GetOneRequest {
+    string name = 1; //Полное имя БД
+}
+
+message GetOneResponse {
+    beget.mysql.v1.structures.DataBase database = 1;
+}
+
+message CreateDbRequest {
+    string name = 1; //Полное имя БД.
+    string password = 2; //Пароль для доступа
+    bool allow_password_decrypt = 3; //Разрешить дешифровку пароля для localhost
+    string comment = 4; //Комментарий пользователя
+}
+
+message CreateDbResponse {
+    oneof result {
+        beget.mysql.v1.structures.DataBase databbase = 1;
+        CreateDbError error = 2;
+    }
+
+    message CreateDbError {
+        Code code = 1;
+        string message = 2;
+
+        enum Code {
+            _ = 0;
+            DB_ALREADY_EXISTS = 1; //БД уже сущетсвует
+            DB_LIMIT_EXCEEDED = 2; //Превышен лимит БД
+            INVALID_DB_NAME = 3; //ошибка валидации имени БД
+            INVALID_PASSWORD = 4; //ошибка валидации пароля БД
+            INVALID_COMMENT = 4; //Ошибка валидации комментария
+        }
+    }
+}
+
+message DropDbRequest {
+    string name = 1; //Полное имя БД с префиксом
+}
+
+message DropDbResponse {
+}
+
+message UpdateDbRequest {
+    string name = 1; //Полное имя БД
+    string comment = 2; //Комментарий пользователя
+}
+
+message UpdateDbResponse {
+    oneof result {
+        beget.mysql.v1.structures.DataBase databbase = 1;
+        UpdateDbError error = 2;
+    }
+
+    message UpdateDbError {
+        Code code = 1;
+        string message = 2;
+
+        enum Code {
+            _ = 0;
+            INVALID_DB_NAME = 1; //Ошибка валидации имени БД
+            INVALID_COMMENT = 2; //Ошибка валидации комментария
+        }
+    }
+}
+
+message AddAccessRequest {
+    string name = 1; //Полное имя БД с префиксом
+    string host = 2; //Хост, которому предоставляется доступ
+    string password = 3; //Пароль для доступа
+    bool allow_password_decrypt = 3; //Разрешить дешифровку пароля (запомнить пароль) (применимо только для localhost) (например: формирование входа в phpmyadmin из панели управления хостингом)
+}
+
+message AddAccessResponse {
+    oneof result {
+        beget.mysql.v1.structures.DataBase databbase = 1;
+        AddAccessError error = 2;
+    }
+
+    message AddAccessError {
+        Code code = 1;
+        string message = 2;
+
+        enum Code {
+            _ = 0;
+            INVALID_PASSWORD = 1; //Ошибка валидации пароля
+            INVALID_HOST = 2; // Ошибка валидации хоста
+            NOT_ALLOWED = 3; // Метод не разрешён
+            DECRYPTION_FAIL = 4; //Только localhost может быть дешифрован
+        }
+    }
+}
+
+message UpdateAccessRequest {
+    string name = 1; //Полное имя БД с префиксом
+    string host = 2; //Хост
+    string password = 3; //Пароль
+    bool allow_password_decrypt = 4; //Разрешить дешифровку пароля (применимо только для localhost)
+}
+
+message UpdateAccessResponse {
+    oneof result {
+        beget.mysql.v1.structures.DataBase databbase = 1;
+        ChangePasswordError error = 2;
+    }
+
+    message ChangePasswordError {
+        Code code = 1;
+        string message = 2;
+
+        enum Code {
+            _ = 0;
+            INVALID_PASSWORD = 1; //Ошибка валидации пароля
+            DECRYPTION_FAIL = 2; //Только localhost может быть дешифрован
+        }
+    }
+}
+
+message DropAccessRequest {
+    string name = 1; //Полное имя БД с префиксом
+    string host = 2; //Хост
+}
+
+message DropAccessResponse {
+}
+
+message GetDecryptedPasswordRequest {
+    string name = 1; //Полное имя БД
+}
+
+message GetDecryptedPasswordResponse {
+    oneof result {
+        string password = 1;
+        GetPasswordError error = 2;
+    }
+
+    message GetPasswordError {
+        Code code = 1;
+        string message = 2;
+
+        enum Code {
+            _ = 0;
+            NOT_ALLOWED = 1; //если при создании\изменении БД выставлен allow_password_decrypt = false
+        }
+    }
+}

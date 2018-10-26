@@ -1,0 +1,15 @@
+syntax = 'proto3';
+
+package beget.mysql.v1.structures;
+
+//Структура записи БД
+message DataBase {
+    string name = 1; //Имя БД
+    string comment = 2; //Пользовательский комментарий
+    uint64 size = 3; //Размер БД в байтах
+    Accesses accesses = 4; //Доступы к БД
+
+    message Accesses {
+        repeated string host = 1;
+    }
+}

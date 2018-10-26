@@ -113,6 +113,7 @@ message CreateDbResponse {
             DB_LIMIT_EXCEEDED = 2; //Превышен лимит БД
             INVALID_DB_NAME = 3; //ошибка валидации имени БД
             INVALID_PASSWORD = 4; //ошибка валидации пароля БД
+            INVALID_COMMENT = 4; //Ошибка валидации комментария
         }
     }
 }
@@ -126,8 +127,7 @@ message DropDbResponse {
 
 message UpdateDbRequest {
     string name = 1; //Полное имя БД
-    string password = 2; //Пароль для доступа
-    string comment = 3; //Комментарий пользователя
+    string comment = 2; //Комментарий пользователя
 }
 
 message UpdateDbResponse {
@@ -143,7 +143,7 @@ message UpdateDbResponse {
         enum Code {
             _ = 0;
             INVALID_DB_NAME = 1; //Ошибка валидации имени БД
-            INVALID_PASSWORD = 2; //Ошибка валидации пароля БД
+            INVALID_COMMENT = 2; //Ошибка валидации комментария
         }
     }
 }
@@ -151,7 +151,7 @@ message UpdateDbResponse {
 message AddAccessRequest {
     string name = 1; //Полное имя БД с префиксом
     string host = 2; //Хост, которому предоставляется доступ
-    string password = 3; //Пароль
+    string password = 3; //Пароль для доступа
     bool allow_password_decrypt = 3; //Разрешить дешифровку пароля (запомнить пароль) (применимо только для localhost) (например: формирование входа в phpmyadmin из панели управления хостингом)
 }
 
@@ -212,7 +212,7 @@ message GetDecryptedPasswordRequest {
     string name = 1; //Полное имя БД
 }
 
-message GetDecryptedPasswordResoponse {
+message GetDecryptedPasswordResponse {
     oneof result {
         string password = 1;
         GetPasswordError error = 2;

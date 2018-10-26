@@ -152,7 +152,8 @@ message AddAccessRequest {
     string name = 1; //Полное имя БД с префиксом
     string host = 2; //Хост, которому предоставляется доступ
     string password = 3; //Пароль для доступа
-    bool allow_password_decrypt = 3; //Разрешить дешифровку пароля (запомнить пароль) (применимо только для localhost) (например: формирование входа в phpmyadmin из панели управления хостингом)
+    bool allow_password_decrypt = 4; //Разрешить дешифровку пароля (запомнить пароль) (применимо только для localhost) (например: формирование входа в phpmyadmin из панели управления хостингом)
+
 }
 
 message AddAccessResponse {

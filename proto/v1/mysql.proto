@@ -39,7 +39,7 @@ service MysqlService {
     //Изменить БД
     rpc update (UpdateDbRequest) returns (UpdateDbResponse) {
         option (google.api.http) = {
-            post: "/v1/mysql/{name}"
+            put: "/v1/mysql/{name}"
             body: "*"
         };
     }
@@ -55,7 +55,7 @@ service MysqlService {
     //Изменить доступ к БД
     rpc updateAccess (UpdateAccessRequest) returns (UpdateAccessResponse) {
         option (google.api.http) = {
-            update: "/v1/mysql/{name}/access/{host}"
+            put: "/v1/mysql/{name}/access/{host}"
             body: "*"
         };
     }
@@ -70,7 +70,7 @@ service MysqlService {
     //Получить пароль от localhost доступа, если разрешена расшифровка
     rpc getDecryptedPassword (GetDecryptedPasswordRequest) returns (GetDecryptedPasswordResponse) {
         option (google.api.http) = {
-            v: "/v1/mysql/{name}/password"
+            get: "/v1/mysql/{name}/password"
         };
     }
 }
@@ -91,10 +91,10 @@ message GetOneResponse {
 }
 
 message CreateDbRequest {
-    string suffix = 1; //Суффикс (имя) БД
-    string password = 2; //пароль для доступа
-    bool allow_decrypt = 3; //Разрешить дешифровку пароля (запомнить пароль)
-    string comment = 4; //комментарий пользователя
+    string name = 1; //Полное имя БД.
+    string password = 2; //Пароль для доступа
+    bool allow_password_decrypt = 3; //Разрешить дешифровку пароля для localhost
+    string comment = 4; //Комментарий пользователя
 }
 
 message CreateDbResponse {
@@ -109,10 +109,10 @@ message CreateDbResponse {
 
         enum Code {
             _ = 0;
-            DB_ALREADY_EXISRS = 1;
-            DB_LIMIT_EXCEEDED = 2;
-            INVALID_SUFFIX = 3;
-            INVALID_PASSWORD = 4;
+            DB_ALREADY_EXISTS = 1; //БД уже сущетсвует
+            DB_LIMIT_EXCEEDED = 2; //Превышен лимит БД
+            INVALID_DB_NAME = 3; //ошибка валидации имени БД
+            INVALID_PASSWORD = 4; //ошибка валидации пароля БД
         }
     }
 }
@@ -122,17 +122,12 @@ message DropDbRequest {
 }
 
 message DropDbResponse {
-    DropDbSuccess success = 1;
-
-    message DropDbSuccess {
-    }
 }
 
 message UpdateDbRequest {
-    string name = 1; //полное имя БД
-    string password = 2; //пароль для доступа
-    bool allow_decrypt = 3; //Разрешить дешифровку пароля (запомнить пароль)
-    string comment = 4; //комментарий пользователя
+    string name = 1; //Полное имя БД
+    string password = 2; //Пароль для доступа
+    string comment = 3; //Комментарий пользователя
 }
 
 message UpdateDbResponse {
@@ -147,18 +142,17 @@ message UpdateDbResponse {
 
         enum Code {
             _ = 0;
-            DB_ALREADY_EXISRS = 1;
-            DB_LIMIT_EXCEEDED = 2;
-            INVALID_SUFFIX = 3;
-            INVALID_PASSWORD = 4;
+            INVALID_DB_NAME = 1; //Ошибка валидации имени БД
+            INVALID_PASSWORD = 2; //Ошибка валидации пароля БД
         }
     }
 }
 
 message AddAccessRequest {
-    string name = 1; //полное имя БД с префиксом
-    string host = 2;
-    string password = 3;
+    string name = 1; //Полное имя БД с префиксом
+    string host = 2; //Хост, которому предоставляется доступ
+    string password = 3; //Пароль
+    bool allow_password_decrypt = 3; //Разрешить дешифровку пароля (запомнить пароль) (применимо только для localhost) (например: формирование входа в phpmyadmin из панели управления хостингом)
 }
 
 message AddAccessResponse {
@@ -173,18 +167,19 @@ message AddAccessResponse {
 
         enum Code {
             _ = 0;
-            INVALID_PASSWORD = 1;
-            INVALID_HOST = 2;
-            FREE_HOSTING_DENIED = 3;
+            INVALID_PASSWORD = 1; //Ошибка валидации пароля
+            INVALID_HOST = 2; // Ошибка валидации хоста
+            NOT_ALLOWED = 3; // Метод не разрешён
+            DECRYPTION_FAIL = 4; //Только localhost может быть дешифрован
         }
     }
 }
 
 message UpdateAccessRequest {
-    string name = 1; //полное имя БД с префиксом
+    string name = 1; //Полное имя БД с префиксом
     string host = 2; //Хост
     string password = 3; //Пароль
-    bool allow_decrypt = 4; //Разрешить дешифровку пароля (запомнить пароль)
+    bool allow_password_decrypt = 4; //Разрешить дешифровку пароля (применимо только для localhost)
 }
 
 message UpdateAccessResponse {
@@ -199,23 +194,18 @@ message UpdateAccessResponse {
 
         enum Code {
             _ = 0;
-            INVALID_PASSWORD = 1;
-            INVALID_HOST = 2;
-            DECRYPTION_FAIL = 3; //Только localhost может быть дешифрован
+            INVALID_PASSWORD = 1; //Ошибка валидации пароля
+            DECRYPTION_FAIL = 2; //Только localhost может быть дешифрован
         }
     }
 }
 
 message DropAccessRequest {
-    string name = 1; //полное имя БД с префиксом
-    string host = 2; //хост
+    string name = 1; //Полное имя БД с префиксом
+    string host = 2; //Хост
 }
 
 message DropAccessResponse {
-    DropDbSuccess success = 1;
-
-    message DropDbSuccess {
-    }
 }
 
 message GetDecryptedPasswordRequest {
@@ -234,7 +224,7 @@ message GetDecryptedPasswordResoponse {
 
         enum Code {
             _ = 0;
-            DECRYPTION_NOT_ALLOWED = 1; //если при создании\изменении БД выставлен allow_decrypt = false
+            NOT_ALLOWED = 1; //если при создании\изменении БД выставлен allow_password_decrypt = false
         }
     }
 }

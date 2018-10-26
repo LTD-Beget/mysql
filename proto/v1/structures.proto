@@ -7,9 +7,9 @@ message DataBase {
     string name = 1; //Имя БД
     string comment = 2; //Пользовательский комментарий
     uint64 size = 3; //Размер БД в байтах
-    Accesses accesses = 4; //Доступы к БД
+    Access access = 4; //Доступы к БД
 
-    message Accesses {
+    message Access {
         repeated string host = 1;
     }
 }

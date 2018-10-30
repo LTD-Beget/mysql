@@ -172,7 +172,7 @@ message AddAccessResponse {
             INVALID_HOST = 2; // Ошибка валидации хоста
             NOT_ALLOWED = 3; // Метод не разрешён
             DECRYPTION_FAIL = 4; //Только localhost может быть дешифрован
-            ACCESS_ALREADY_EXISTS = 4; // Доступ уже есть.
+            ACCESS_ALREADY_EXISTS = 5; // Доступ уже есть.
         }
     }
 }

@@ -114,9 +114,7 @@ message CreateDbResponse {
             INVALID_DB_NAME = 3; //ошибка валидации имени БД
             INVALID_PASSWORD = 4; //ошибка валидации пароля БД
             INVALID_COMMENT = 5; //Ошибка валидации комментария
-            PASSWORD_EQUALS_SUFFIX = 6; // Пароль аналогичен суффиксу имени пользователя
-            PASSWORD_EQUALS_PREFIX = 7; // Пароль аналогичен префиксу имени пользователя
-            PASSWORD_EQUALS_USERNAME = 8; // Пароль аналогичен имени пользователя
+            INVALID_SEQUENCE_IN_PASSWORD = 6; // Пароль аналогичен суффиксу, префиксу, или имени пользователя
         }
     }
 }
@@ -176,9 +174,7 @@ message AddAccessResponse {
             NOT_ALLOWED = 3; // Метод не разрешён
             DECRYPTION_FAIL = 4; //Только localhost может быть дешифрован
             ACCESS_ALREADY_EXISTS = 5; // Доступ уже есть.
-            PASSWORD_EQUALS_SUFFIX = 6; // Пароль аналогичен суффиксу имени пользователя
-            PASSWORD_EQUALS_PREFIX = 7; // Пароль аналогичен префиксу имени пользователя
-            PASSWORD_EQUALS_USERNAME = 8; // Пароль аналогичен имени пользователя
+            INVALID_SEQUENCE_IN_PASSWORD = 6; // Пароль аналогичен суффиксу, префиксу, или имени пользователя
         }
     }
 }
@@ -204,9 +200,7 @@ message UpdateAccessResponse {
             _ = 0;
             INVALID_PASSWORD = 1; //Ошибка валидации пароля
             DECRYPTION_FAIL = 2; //Только localhost может быть дешифрован
-            PASSWORD_EQUALS_SUFFIX = 3; // Пароль аналогичен суффиксу имени пользователя
-            PASSWORD_EQUALS_PREFIX = 4; // Пароль аналогичен префиксу имени пользователя
-            PASSWORD_EQUALS_USERNAME = 5; // Пароль аналогичен имени пользователя
+            INVALID_SEQUENCE_IN_PASSWORD = 3; // Пароль аналогичен суффиксу, префиксу, или имени пользователя
         }
     }
 }

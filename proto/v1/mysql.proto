@@ -115,6 +115,7 @@ message CreateDbResponse {
             INVALID_PASSWORD = 4; //ошибка валидации пароля БД
             INVALID_COMMENT = 5; //Ошибка валидации комментария
             INVALID_SEQUENCE_IN_PASSWORD = 6; // Пароль аналогичен суффиксу, префиксу, или имени пользователя
+            PASSWORD_TOO_WEAK = 7; //Пароль слишком простой
         }
     }
 }
@@ -175,6 +176,7 @@ message AddAccessResponse {
             DECRYPTION_FAIL = 4; //Только localhost может быть дешифрован
             ACCESS_ALREADY_EXISTS = 5; // Доступ уже есть.
             INVALID_SEQUENCE_IN_PASSWORD = 6; // Пароль аналогичен суффиксу, префиксу, или имени пользователя
+            PASSWORD_TOO_WEAK = 7; //Пароль слишком простой
         }
     }
 }
@@ -201,6 +203,7 @@ message UpdateAccessResponse {
             INVALID_PASSWORD = 1; //Ошибка валидации пароля
             DECRYPTION_FAIL = 2; //Только localhost может быть дешифрован
             INVALID_SEQUENCE_IN_PASSWORD = 3; // Пароль аналогичен суффиксу, префиксу, или имени пользователя
+            PASSWORD_TOO_WEAK = 4; //Пароль слишком простой
         }
     }
 }

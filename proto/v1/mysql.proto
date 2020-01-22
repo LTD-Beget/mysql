@@ -99,7 +99,7 @@ message CreateDbRequest {
 
 message CreateDbResponse {
     oneof result {
-        beget.mysql.v1.structures.DataBase databbase = 1;
+        beget.mysql.v1.structures.DataBase database = 1;
         CreateDbError error = 2;
     }
 
@@ -134,7 +134,7 @@ message UpdateDbRequest {
 
 message UpdateDbResponse {
     oneof result {
-        beget.mysql.v1.structures.DataBase databbase = 1;
+        beget.mysql.v1.structures.DataBase database = 1;
         UpdateDbError error = 2;
     }
 
@@ -160,7 +160,7 @@ message AddAccessRequest {
 
 message AddAccessResponse {
     oneof result {
-        beget.mysql.v1.structures.DataBase databbase = 1;
+        beget.mysql.v1.structures.DataBase database = 1;
         AddAccessError error = 2;
     }
 
@@ -190,7 +190,7 @@ message UpdateAccessRequest {
 
 message UpdateAccessResponse {
     oneof result {
-        beget.mysql.v1.structures.DataBase databbase = 1;
+        beget.mysql.v1.structures.DataBase database = 1;
         ChangePasswordError error = 2;
     }
 

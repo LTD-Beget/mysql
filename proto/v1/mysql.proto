@@ -79,7 +79,10 @@ message GetListRequest {
 }
 
 message GetListResponse {
+    // Список баз данных MySQL
     repeated beget.mysql.v1.structures.DataBase database = 1;
+    // Глобальная версия сервера MySQL (версия по-умолчанию)
+    string server_version = 2;
 }
 
 message GetOneRequest {
